@@ -1,5 +1,5 @@
 from asyncio import sleep
-from datetime import date
+from datetime import date, datetime
 from random import choices
 from string import ascii_lowercase
 
@@ -143,8 +143,8 @@ async def set0(message: Message):
         if message.from_user.id not in ADMINS:
             return
 
-        start_of_year = date(2025, 1, 1)
-        end_of_year = date(2025, 12, 31)
+        start_of_year = datetime(2025, 1, 1)
+        end_of_year = datetime(2025, 12, 31)
 
 
         await bot.send_chat_action(message.chat.id, 'typing')
