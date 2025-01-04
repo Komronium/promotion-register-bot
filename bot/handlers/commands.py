@@ -197,6 +197,5 @@ async def get_latest(message: Message):
     tz_obj = timezone(time_delta, name='UZ')
     await bot.send_chat_action(message.chat.id, 'typing')
     await sleep(0.2)
-    await message.answer(f'<b>Latest</b>')
     await message.answer((f'<b>Special Code:</b> {latest.special_code}\n'
                           f'<b>Date</b>: {latest.date.astimezone(tz_obj).strftime('%H:%M:%S  %d.%m.%Y')}'))
