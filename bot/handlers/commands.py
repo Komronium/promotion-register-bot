@@ -139,18 +139,36 @@ async def delete_data_command(message: Message, state: FSMContext):
 
 @command_router.message(Command('set0'))
 async def set0(message: Message):
-    if message.from_user.id not in ADMINS:
-        return
+    try:
+        if message.from_user.id not in ADMINS:
+            return
 
-    new_promos = await Promo.filter(date__year=2025).all().order_by('date')
-    old_promos = await Promo.filter(date__lt=2025).all()
-    i = 1
+        await bot.send_chat_action(message.chat.id, 'typing')
+        await sleep(0.2)
+        await message.answer('Calculating ...')
 
-    for promo in old_promos:
-        promo.special_code = ''.join(choices(ascii_lowercase, k=6))
-        await promo.save()
+        new_promos = await Promo.filter(date__year=2025).all().order_by('date')
+        old_promos = await Promo.filter(date__lt=2025).all()
+        i = 1
 
-    for promo in new_promos:
-        promo.special_code = str(i).zfill(6)
-        await promo.save()
-        i += 1
+        for promo in old_promos:
+            promo.special_code = ''.join(choices(ascii_lowercase, k=6))
+            await promo.save()
+
+        await bot.send_chat_action(message.chat.id, 'typing')
+        await sleep(0.2)
+        await message.answer('The old promos have been successfully updated')
+
+        for promo in new_promos:
+            promo.special_code = str(i).zfill(6)
+            await promo.save()
+            i += 1
+
+        await bot.send_chat_action(message.chat.id, 'typing')
+        await sleep(0.2)
+        await message.answer("The new promos have been successfully updated.")
+        await message.answer('✅ DONE!')
+    except Exception as e:
+        await bot.send_chat_action(message.chat.id, 'typing')
+        await sleep(0.2)
+        await message.answer(f"⁉️ Error: {str(e)}")
