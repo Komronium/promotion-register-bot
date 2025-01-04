@@ -1,5 +1,7 @@
 from asyncio import sleep
 from datetime import date
+from random import choices
+from string import ascii_lowercase
 
 from loguru import logger
 import pandas as pd
@@ -15,6 +17,7 @@ from bot.misc import bot
 from bot.states import BlockStates, MessageStates
 from bot.texts import *
 from bot.utils import save_to_excel
+from bot.models import Promo, Code
 from config import ADMIN_USERNAME, ADMINS
 
 command_router = Router()
@@ -132,3 +135,22 @@ async def delete_data_command(message: Message, state: FSMContext):
     await sleep(0.2)
     await message.answer(SEND_MESSAGE_TEXT_TEXT)
     await state.set_state(MessageStates.get_message)
+
+
+@command_router.message(Command('set0'))
+async def set0(message: Message):
+    if message.from_user.id not in ADMINS:
+        return
+
+    new_promos = await Promo.filter(date__year=2025).all().order_by('date')
+    old_promos = await Promo.filter(date__lt=2025).all()
+    i = 1
+
+    for promo in old_promos:
+        promo.special_code = ''.join(choices(ascii_lowercase, k=6))
+        await promo.save()
+
+    for promo in new_promos:
+        promo.special_code = str(i).zfill(6)
+        await promo.save()
+        i += 1
