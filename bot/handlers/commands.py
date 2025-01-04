@@ -153,10 +153,10 @@ async def set0(message: Message):
 
         new_promos = await Promo.filter(date__gte=start_of_year, date__lte=end_of_year).order_by('date')
         await message.answer('Yangi promo kodlar olindi')
-        await message.answer(str(new_promos))
+        await message.answer(str(len(new_promos)))
         old_promos = await Promo.filter(date__lt=start_of_year).all()
         await message.answer('Eski promo kodlar olindi')
-        await message.answer(str(old_promos))
+        await message.answer(str(len(old_promos)))
         i = 1
 
         for promo in old_promos:
@@ -176,7 +176,8 @@ async def set0(message: Message):
         await sleep(0.2)
         await message.answer("The new promos have been successfully updated.")
         await message.answer('✅ DONE!')
-        await message.answer(str(await Promo.all()))
+        all_promos = await Promo.all()
+        await message.answer(str(len(all_promos)))
     except Exception as e:
         await bot.send_chat_action(message.chat.id, 'typing')
         await sleep(0.2)
