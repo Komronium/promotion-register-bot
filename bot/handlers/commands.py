@@ -143,14 +143,18 @@ async def set0(message: Message):
         if message.from_user.id not in ADMINS:
             return
 
+        start_of_year = date(2025, 1, 1)
+        end_of_year = date(2025, 12, 31)
+
+
         await bot.send_chat_action(message.chat.id, 'typing')
         await sleep(0.2)
         await message.answer('Calculating ...')
 
-        new_promos = await Promo.filter(date__year=2025).order_by('date')
+        new_promos = await Promo.filter(date__gte=start_of_year, date__lte=end_of_year).order_by('date')
         await message.answer('Yangi promo kodlar olindi')
         await message.answer(str(new_promos))
-        old_promos = await Promo.filter(date__lt=2025).all()
+        old_promos = await Promo.filter(date__lt=start_of_year).all()
         await message.answer('Eski promo kodlar olindi')
         await message.answer(str(new_promos))
         i = 1
