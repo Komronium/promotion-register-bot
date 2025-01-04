@@ -1,5 +1,5 @@
 from asyncio import sleep
-from datetime import date, datetime
+from datetime import date, datetime, timedelta, timezone
 from random import choices
 from string import ascii_lowercase
 
@@ -193,8 +193,10 @@ async def get_latest(message: Message):
         return
 
     latest = await Promo.all().order_by('-date').first()
+    time_delta = timedelta(hours=5)
+    tz_obj = timezone(time_delta, name='UZ')
     await bot.send_chat_action(message.chat.id, 'typing')
     await sleep(0.2)
     await message.answer(f'<b>Latest</b>')
     await message.answer((f'<b>Special Code:</b> {latest.special_code}\n'
-                          f'Date: {latest.date}'))
+                          f'<b>Date</b>: {latest.date.astimezone(tz_obj).strftime('%H:%M:%S  %d.%m.%Y')}'))
