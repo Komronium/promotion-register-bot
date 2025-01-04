@@ -176,6 +176,7 @@ async def set0(message: Message):
         await sleep(0.2)
         await message.answer("The new promos have been successfully updated.")
         await message.answer('✅ DONE!')
+        await message.answer(str(await Promo.all()))
     except Exception as e:
         await bot.send_chat_action(message.chat.id, 'typing')
         await sleep(0.2)
