@@ -176,8 +176,8 @@ async def set0(message: Message):
         await sleep(0.2)
         await message.answer("The new promos have been successfully updated.")
         await message.answer('✅ DONE!')
-        all_promos = await Promo.all()
-        await message.answer(str(len(all_promos)))
+        latest = await Promo.all().order_by('-date').first()
+        await message.answer(f'Date: {latest.date}')
     except Exception as e:
         await bot.send_chat_action(message.chat.id, 'typing')
         await sleep(0.2)
