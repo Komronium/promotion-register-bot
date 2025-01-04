@@ -156,7 +156,7 @@ async def set0(message: Message):
         await message.answer(str(new_promos))
         old_promos = await Promo.filter(date__lt=start_of_year).all()
         await message.answer('Eski promo kodlar olindi')
-        await message.answer(str(new_promos))
+        await message.answer(str(old_promos))
         i = 1
 
         for promo in old_promos:
